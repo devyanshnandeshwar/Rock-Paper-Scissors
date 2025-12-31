@@ -5,6 +5,7 @@
 using namespace std;
 
 // Player Class
+// Respreseents a participant in the game (User or Computer)
 class Player
 {
 private:
@@ -12,11 +13,7 @@ private:
     int score;
 
 public:
-    Player(string playerName)
-    {
-        name = playerName;
-        score = 0;
-    }
+    Player(string playerName) : name(playerName), score(0) {}
 
     void incrementScore()
     {
