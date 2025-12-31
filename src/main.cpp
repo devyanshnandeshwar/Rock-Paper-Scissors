@@ -4,158 +4,139 @@
 
 using namespace std;
 
-// Function to get validated user choice
-int getUserChoice()
+// Player Class
+class Player
 {
-    int choice;
-    while (true)
+private:
+    string name;
+    int score;
+
+public:
+    Player(string playerName)
     {
-        cout << "Enter your choice (0-Rock, 1-Paper, 2-Scissors: ";
-        cin >> choice;
-        if (cin.fail() || choice < 0 || choice > 2)
+        name = playerName;
+        score = 0;
+    }
+
+    void incrementScore()
+    {
+        score++;
+    }
+
+    int getScore() const
+    {
+        return score;
+    }
+
+    string getName() const
+    {
+        return name;
+    }
+};
+
+// Game Class
+class Game
+{
+private:
+    Player user;
+    Player computer;
+    int draws;
+    string choices[3] = {"Rock", "Paper", "Scissors"};
+
+public:
+    Game() : user("You"), computer("Computer"), draws(0)
+    {
+        srand(time(0)); // Seed random number generator
+    }
+
+    int getUserChoice()
+    {
+        int choice;
+        while (true)
         {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Invalid input. Please try again." << endl;
-        }
-        else
-        {
-            return choice;
+            cout << "\nEnter your choice: " << endl;
+            cout << "0 - Rock" << endl;
+            cout << "1 - Paper" << endl;
+            cout << "2 - Scissors" << endl;
+            cout << "Your choice: ";
+            cin >> choice;
+
+            if (cin.fail() || choice < 0 || choice > 2)
+            {
+                cin.clear();
+                cin.ignore(1000, '\n');
+                cout << "Invalid input. Try again." << endl;
+            }
+            else
+            {
+                return choice;
+            }
         }
     }
-}
 
-// Function to generate computer choice
-int getComputerChoice()
-{
-    return rand() % 3;
-}
-
-// Function to determine winner
-// Return: 0 = Draw, 1 = User Wins, -1 = Computer Wins
-int determineWinner(int user, int computer)
-{
-    if (user == computer)
-        return 0;
-
-    if ((user == 0 && computer == 2) ||
-        (user == 1 && computer == 0) ||
-        (user == 2 && computer == 1))
+    int getComputerChoice()
     {
-        return 1;
+        return rand() % 3;
     }
-    return -1;
-}
 
-// Function to display scoreboard
-void displayScore(int userScore, int computerScore, int drawCount)
-{
-    cout << "\n--- Scoreboard ---" << endl;
-    cout << "You: " << userScore << endl;
-    cout << "Computer: " << computerScore << endl;
-    cout << "Draws: " << drawCount << endl;
-}
-
-int main()
-{
-    srand(time(0)); // Seed one
-
-    int userScore = 0;
-    int computerScore = 0;
-    int drawCount = 0;
-    char playAgain = 'y';
-
-    string choices[] = {"Rock", "Paper", "Scissors"};
-
-    while (playAgain == 'y' || playAgain == 'Y')
+    void determineWinner(int userChoice, int computerChoice)
     {
-        cout << "\n=== Rock Paper Scissors ===" << endl;
-
-        int userChoice = getUserChoice();
-        int computerChoice = getComputerChoice();
-
         cout << "\nYou chose: " << choices[userChoice] << endl;
         cout << "Computer chose: " << choices[computerChoice] << endl;
 
-        int result = determineWinner(userChoice, computerChoice);
-
-        if (result == 0)
+        if (userChoice == computerChoice)
         {
             cout << "Result: Draw!" << endl;
-            drawCount++;
+            draws++;
         }
-        else if (result == 1)
+        else if (
+            (userChoice == 0 && computerChoice == 2) ||
+            (userChoice == 1 && computerChoice == 0) ||
+            (userChoice == 2 && computerChoice == 1))
         {
             cout << "Result: You Win!" << endl;
-            userScore++;
+            user.incrementScore();
         }
         else
         {
-            cout << "Result: Computer Wins!" << endl;
-            computerScore++;
+            cout << "Result: Computer Wins! " << endl;
+            computer.incrementScore();
         }
-
-        displayScore(userScore, computerScore, drawCount);
-
-        cout << "\nPlay again (y/n): ";
-        cin >> playAgain;
     }
-    while (true)
-    {
-        cout << "Enter your choice: ";
-        cin >> userChoice;
 
-        if (cin.fail() || userChoice < 0 || userChoice > 2)
+    void displayScoreboard() const
+    {
+        cout << "\n --- Scoreboard ---" << endl;
+        cout << user.getName() << ": " << user.getScore() << endl;
+        cout << computer.getName() << ": " << computer.getScore() << endl;
+        cout << "Draws: " << draws << endl;
+    }
+
+    void play()
+    {
+        char playAgain = 'y';
+
+        while (playAgain == 'y' || playAgain == 'Y')
         {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Invalid input. Please enter 0, 1, or 2." << endl;
+            int userChoice = getUserChoice();
+            int computerChoice = getComputerChoice();
+
+            determineWinner(userChoice, computerChoice);
+            displayScoreboard();
+
+            cout << "\nPlay again? (y/n): ";
+            cin >> playAgain;
         }
-        else
-        {
-            break;
-        }
+
+        cout << "\nFinal Score: " << endl;
+        displayScoreboard();
+        cout << "\nTnaks for playing ";
     }
+};
 
-    int computerChoice = rand() % 3;
-
-    cout << "\nYou chose: " << choices[userChoice] << endl;
-    cout << "Computer chose: " << choices[computerChoice] << endl;
-
-    // Decide winner & update scores
-    if (userChoice == computerChoice)
-    {
-        cout << "Result: Draw!" << endl;
-        drawCount++;
-    }
-    else if (
-        (userChoice == 0 && computerChoice == 2) ||
-        (userChoice == 1 && computerChoice == 0) ||
-        (userChoice == 2 && computerChoice == 1))
-    {
-        cout << "Result: You Win!" << endl;
-        userScore++;
-    }
-    else
-    {
-        cout << "Result: Computer Wins!" << endl;
-        computerScore++;
-    }
-
-    // Display Scoreboard
-    cout << "\n--- Scoreboard ---" << endl;
-    cout << "You: " << userScore << endl;
-    cout << "Computer: " << computerScore << endl;
-    cout << "Draws: " << drawCount << endl;
-
-    cout << "\nPlay again (y/n): ";
-    cin >> playAgain;
-}
-cout << "\nFinal Score: " << endl;
-cout << "You: " << userScore << endl;
-cout << "Computer: " << computerScore << endl;
-cout << "Draws: " << drawCount << endl;
-cout << "\nThanks for playing!" << endl;
-
-return 0;
+int main()
+{
+    Game game;
+    game.play();
+    return 0;
 }
