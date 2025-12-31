@@ -23,6 +23,11 @@ public:
         score++;
     }
 
+    void resetScore()
+    {
+        score = 0;
+    }
+
     int getScore() const
     {
         return score;
@@ -47,6 +52,16 @@ public:
     Game() : user("You"), computer("Computer"), draws(0)
     {
         srand(time(0)); // Seed random number generator
+    }
+
+    void showMenu() const
+    {
+        cout << "\n===== MAIN MENU =====" << endl;
+        cout << "1. Play Game" << endl;
+        cout << "2. View Scoreboard" << endl;
+        cout << "3. Reset Scoreboard" << endl;
+        cout << "4. Exit" << endl;
+        cout << "Choose an option: ";
     }
 
     int getUserChoice()
@@ -79,8 +94,11 @@ public:
         return rand() % 3;
     }
 
-    void determineWinner(int userChoice, int computerChoice)
+    void playRound()
     {
+        int userChoice = getUserChoice();
+        int computerChoice = getComputerChoice();
+
         cout << "\nYou chose: " << choices[userChoice] << endl;
         cout << "Computer chose: " << choices[computerChoice] << endl;
 
@@ -112,31 +130,55 @@ public:
         cout << "Draws: " << draws << endl;
     }
 
-    void play()
+    void resetScoreboard()
     {
-        char playAgain = 'y';
+        user.resetScore();
+        computer.resetScore();
+        draws = 0;
+        cout << "\nScoreboard reset successfully!" << endl;
+    }
 
-        while (playAgain == 'y' || playAgain == 'Y')
+    void start()
+    {
+        int option;
+
+        while (true)
         {
-            int userChoice = getUserChoice();
-            int computerChoice = getComputerChoice();
+            showMenu();
+            cin >> option;
 
-            determineWinner(userChoice, computerChoice);
-            displayScoreboard();
+            if (cin.fail())
+            {
+                cin.clear();
+                cin.ignore(1000, '\n');
+                cout << "Invalid input. Try again." << endl;
+                continue;
+            }
 
-            cout << "\nPlay again? (y/n): ";
-            cin >> playAgain;
+            switch (option)
+            {
+            case 1:
+                playRound();
+                break;
+            case 2:
+                displayScoreboard();
+                break;
+            case 3:
+                resetScoreboard();
+                break;
+            case 4:
+                cout << "Exiting the game. Goodbye!" << endl;
+                return;
+            default:
+                cout << "Invalid option. Please try again. Choose 1-4." << endl;
+            }
         }
-
-        cout << "\nFinal Score: " << endl;
-        displayScoreboard();
-        cout << "\nTnaks for playing ";
     }
 };
 
 int main()
 {
     Game game;
-    game.play();
+    game.start();
     return 0;
 }
