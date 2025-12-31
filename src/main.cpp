@@ -37,6 +37,7 @@ public:
 };
 
 // Game Class
+// Handles game flow, menu system and scoring
 class Game
 {
 private:
@@ -51,6 +52,7 @@ public:
         srand(time(0)); // Seed random number generator
     }
 
+    // Display main menu
     void showMenu() const
     {
         cout << "\n===== MAIN MENU =====" << endl;
@@ -61,6 +63,7 @@ public:
         cout << "Choose an option: ";
     }
 
+    // Get validated user move
     int getUserChoice()
     {
         int choice;
@@ -91,6 +94,7 @@ public:
         return rand() % 3;
     }
 
+    // Play a single round
     void playRound()
     {
         int userChoice = getUserChoice();
@@ -119,6 +123,7 @@ public:
         }
     }
 
+    // Display current scores
     void displayScoreboard() const
     {
         cout << "\n --- Scoreboard ---" << endl;
@@ -127,6 +132,7 @@ public:
         cout << "Draws: " << draws << endl;
     }
 
+    // Reset all scores
     void resetScoreboard()
     {
         user.resetScore();
@@ -135,6 +141,7 @@ public:
         cout << "\nScoreboard reset successfully!" << endl;
     }
 
+    // Main application loop
     void start()
     {
         int option;
